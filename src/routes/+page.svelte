@@ -1,56 +1,17 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { 
-    ArrowUpRight, BookText, Terminal, Activity, 
-    Github, Youtube, Linkedin, Code2, Star, Circle, Heart 
-  } from 'lucide-svelte';
+    import {
 
-  // --- Types ---
-  interface MediumPost {
-    title: string;
-    link: string;
-    pubDate: string;
-    guid: string;
-  }
+ArrowUpRight, BookText, Terminal, Activity,
 
-  interface GitHubRepo {
-    id: number;
-    name: string;
-    html_url: string;
-    description: string | null;
-    language: string | null;
-    stargazers_count: number;
-  }
+Github, Youtube, Linkedin, Code2, Star, Circle, Heart
 
-  // --- State (Runes) ---
-  let posts = $state<MediumPost[]>([]);
-  let repos = $state<GitHubRepo[]>([]);
-  let loading = $state({ medium: true, github: true });
+} from 'lucide-svelte';
 
-  // --- Logic ---
-  onMount(() => {
-    // Fetch Medium Posts
-    fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@dincertekin`)
-      .then(res => res.json())
-      .then(data => {
-        posts = data.items || [];
-        loading.medium = false;
-      })
-      .catch(() => loading.medium = false);
-
-    // Fetch GitHub Repos
-    fetch(`https://api.github.com/users/dincertekin/repos?per_page=15`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          repos = data
-            .sort((a, b) => b.stargazers_count - a.stargazers_count)
-            .slice(0, 4);
-        }
-        loading.github = false;
-      })
-      .catch(() => loading.github = false);
-  });
+  let { data } = $props(); // Svelte 5 way to get data from the loader
+  
+  // These become reactive derivations from the server data
+  let posts = $derived(data.posts);
+  let repos = $derived(data.repos);
 </script>
 
 <div class="min-h-screen bg-[#0b0b0b] text-[#e0e0e0] font-sans selection:bg-[#22c55e]/30 selection:text-white relative overflow-hidden">
@@ -89,9 +50,7 @@
         <Code2 size={14} class="text-[#22c55e]" /> Most Starred Repositories
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-        {#if loading.github}
-          <div class="col-span-2 py-8 text-center font-mono text-xs opacity-40">Loading GitHub repositories...</div>
-        {:else}
+        
           {#each repos as repo (repo.id)}
             <a 
               href={repo.html_url} 
@@ -111,8 +70,9 @@
                 <span class="flex items-center gap-1"><Star size={10} /> {repo.stargazers_count}</span>
               </div>
             </a>
+            {:else}
+      <p class="font-mono text-xs opacity-40">No repositories found.</p>
           {/each}
-        {/if}
       </div>
     </section>
 
@@ -121,9 +81,7 @@
         <BookText size={14} class="text-[#22c55e]" /> LATEST STORIES
       </div>
       <div class="space-y-0">
-        {#if loading.medium}
-          <div class="py-12 text-center font-mono text-xs opacity-40 italic">Loading Medium stories...</div>
-        {:else}
+        
           {#each posts.slice(0, 5) as post, index (post.guid || index)}
             <a 
               href={post.link} 
@@ -137,8 +95,9 @@
               </div>
               <ArrowUpRight size={18} class="text-gray-700 group-hover:text-[#22c55e] transition-all" />
             </a>
+            {:else}
+      <p class="font-mono text-xs opacity-40">No posts found.</p>
           {/each}
-        {/if}
       </div>
     </section>
 
