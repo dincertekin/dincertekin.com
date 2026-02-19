@@ -1,15 +1,11 @@
 <script lang="ts">
-    import {
+  import {
+    ArrowUpRight, BookText, Terminal, Activity,
+    Github, Youtube, Linkedin, Code2, Star, Circle, Heart
+  } from 'lucide-svelte';
 
-ArrowUpRight, BookText, Terminal, Activity,
-
-Github, Youtube, Linkedin, Code2, Star, Circle, Heart
-
-} from 'lucide-svelte';
-
-  let { data } = $props(); // Svelte 5 way to get data from the loader
+  let { data } = $props();
   
-  // These become reactive derivations from the server data
   let posts = $derived(data.posts);
   let repos = $derived(data.repos);
 </script>
@@ -28,7 +24,7 @@ Github, Youtube, Linkedin, Code2, Star, Circle, Heart
       <div class="relative mb-8">
         <div class="absolute inset-0 rounded-full bg-[#22c55e]/10 blur-2xl"></div>
         <img 
-          src="https://placehold.co/150" 
+          src="https://avatars.githubusercontent.com/u/69431018?v=4" 
           alt="Dinçer Tekin"
           class="relative w-28 h-28 rounded-full border border-white/10 object-cover grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl"
         />
