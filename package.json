@@ -28,6 +28,6 @@
 		"wrangler": "^4.62.0"
 	},
 	"dependencies": {
-		"lucide-svelte": "^0.563.0"
+		"lucide-svelte": "^0.575.0"
 	}
 }
